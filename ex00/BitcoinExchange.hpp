@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 01:05:29 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/05/15 15:37:52 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/05/15 17:58:03 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ class BitcoinExchange
 {
 	public:
 		static bool loadValues();
-		static void translateValues(std::ifstream input);
+		static void translateValues(std::ifstream &input);
 };
 
 #endif

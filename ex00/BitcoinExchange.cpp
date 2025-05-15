@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 01:06:48 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/05/15 15:40:32 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/05/15 17:57:59 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ bool BitcoinExchange::loadValues()
 		}
 		if (!isStringValid(buffer))
 		{
-			std::cout << RED << "data.csv is corrupted at line " << line << "." << std::endl;
+			std::cout << RED << "data.csv is corrupted at line " << line + 1 << "." << std::endl;
 			std::cout << "> " <<  buffer << RESET << std::endl;
 			return (false);
 		}
@@ -96,7 +96,7 @@ bool BitcoinExchange::loadValues()
 	return (true);
 }
 
-void BitcoinExchange::translateValues(std::ifstream input)
+void BitcoinExchange::translateValues(std::ifstream &input)
 {
 	std::string buffer;
 	size_t line;
