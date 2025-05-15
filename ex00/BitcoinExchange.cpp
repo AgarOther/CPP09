@@ -6,10 +6,125 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 01:06:48 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/05/15 01:06:55 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/05/15 15:40:32 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "BitcoinExchange.hpp"
+#include "colors.hpp"
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <time.h>
 
+static bool isStringValid(const std::string &str)
+{
+	size_t dashes;
+	size_t dots;
 
+	if (std::find(str.begin(), str.end(), ',') == str.end())
+		return (false);
+	dashes = 0;
+	dots = 0;
+	for (size_t i = 0; i < str.length(); i++)
+	{
+		if (!isdigit(str[i]) && str[i] != '-' && str[i] != ',' && str[i] != '.')
+			return (false);
+		else if ((str[i] == '-' && (i != 4 && i != 7)) || (str[i] == ',' && i != 10))
+			return (false);
+		else if (str[i] == ',' && i == str.length() - 1)
+			return (false);
+		if (str[i] == '-')
+			dashes++;
+		else if (str[i] == '.')
+			dots++;
+	}
+	return (std::find(str.begin(), str.end(), ',') != str.end() && dashes == 2 && dots <= 1);
+}
+
+static unsigned long long dateToTimestamp(const std::string &date)
+{
+	struct tm time;
+	time.tm_year=atoi(date.substr(0, 4).c_str()) - 1900;
+	time.tm_mon=atoi(date.substr(5, 2).c_str());
+	time.tm_mday=atoi(date.substr(8, 2).c_str());
+	time.tm_hour=0;
+	time.tm_min=0;
+	time.tm_sec=0;
+	time.tm_isdst=false;
+	return (mktime(&time));
+}
+
+bool BitcoinExchange::loadValues()
+{
+	std::ifstream database;
+	std::string buffer;
+	size_t line;
+	
+	database.open("data.csv");
+	if (database.fail())
+	{
+		std::cout << RED << "Can't open data.csv. Aborting." << RESET << std::endl;
+		return (false);
+	}
+	line = false;
+	while (std::getline(database, buffer))
+	{
+		if (!line)
+		{
+			if (buffer != "date,exchange_rate")
+			{
+				std::cout << RED << "data.csv missing or corrupted first line indicator. Should be \"date,exchange_rate\"." << std::endl;
+				std::cout << "Found: " << buffer << RESET << std::endl;
+				return (false);
+			}
+			line++;
+			continue;
+		}
+		if (!isStringValid(buffer))
+		{
+			std::cout << RED << "data.csv is corrupted at line " << line << "." << std::endl;
+			std::cout << "> " <<  buffer << RESET << std::endl;
+			return (false);
+		}
+		// std::cout << "Date: " << buffer.substr(0, 4) << " | Timestamp: " << dateToTimestamp(buffer) << " | Value: " << atof(buffer.substr(11, buffer.length()).c_str()) << std::endl;
+		values.insert(std::pair<unsigned long long, double>(dateToTimestamp(buffer), atof(buffer.substr(11, buffer.length() - 11).c_str())));
+		line++;
+	}
+	database.close();
+	std::cout << GREEN << "Parsed data.csv successfully." << RESET << std::endl;
+	return (true);
+}
+
+void BitcoinExchange::translateValues(std::ifstream input)
+{
+	std::string buffer;
+	size_t line;
+
+	line = false;
+	while (std::getline(input, buffer))
+	{
+		if (!line)
+		{
+			if (buffer != "date | value")
+			{
+				std::cout << RED << "Input file missing or corrupted first line indicator. Should be \"date | value\"." << std::endl;
+				std::cout << "Found: " << buffer << RESET << std::endl;
+				return ;
+			}
+			line++;
+			continue;
+		}
+		if (!isStringValid(buffer))
+		{
+			std::cout << RED << "data.csv is corrupted at line " << line << "." << std::endl;
+			std::cout << "> " <<  buffer << RESET << std::endl;
+			return ;
+		}
+		// std::cout << "Date: " << buffer.substr(0, 4) << " | Timestamp: " << dateToTimestamp(buffer) << " | Value: " << atof(buffer.substr(11, buffer.length()).c_str()) << std::endl;
+		values.insert(std::pair<unsigned long long, double>(dateToTimestamp(buffer), atof(buffer.substr(11, buffer.length() - 11).c_str())));
+		line++;
+	}
+	input.close();
+	std::cout << GREEN << "Parsed data.csv successfully." << RESET << std::endl;
+}
