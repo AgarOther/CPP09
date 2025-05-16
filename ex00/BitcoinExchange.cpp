@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 01:06:48 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/05/15 17:57:59 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/05/16 13:33:30 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 #include <iostream>
 #include <string>
 #include <algorithm>
-#include <time.h>
 
 static bool isStringValid(const std::string &str)
 {
@@ -42,7 +41,7 @@ static bool isStringValid(const std::string &str)
 	return (std::find(str.begin(), str.end(), ',') != str.end() && dashes == 2 && dots <= 1);
 }
 
-static unsigned long long dateToTimestamp(const std::string &date)
+static time_t dateToTimestamp(const std::string &date)
 {
 	struct tm time;
 	time.tm_year=atoi(date.substr(0, 4).c_str()) - 1900;
@@ -88,12 +87,54 @@ bool BitcoinExchange::loadValues()
 			return (false);
 		}
 		// std::cout << "Date: " << buffer.substr(0, 4) << " | Timestamp: " << dateToTimestamp(buffer) << " | Value: " << atof(buffer.substr(11, buffer.length()).c_str()) << std::endl;
-		values.insert(std::pair<unsigned long long, double>(dateToTimestamp(buffer), atof(buffer.substr(11, buffer.length() - 11).c_str())));
+		values.insert(std::pair<time_t, float>(dateToTimestamp(buffer), atof(buffer.substr(11, buffer.length() - 11).c_str())));
 		line++;
 	}
 	database.close();
 	std::cout << GREEN << "Parsed data.csv successfully." << RESET << std::endl;
 	return (true);
+}
+
+static bool isValueValid(const std::string &str)
+{
+	size_t dashes;
+	size_t dots;
+
+	if (std::find(str.begin(), str.end(), '|') == str.end())
+		return (false);
+	dashes = 0;
+	dots = 0;
+	for (size_t i = 0; i < str.length(); i++)
+	{
+		if (!isdigit(str[i]) && str[i] != '-' && str[i] != '|' && str[i] != '.' && str[i] != ' ')
+			return (false);
+		else if ((str[i] == '-' && (i != 4 && i != 7 && i != 13)) || (str[i] == '|' && i != 11) || (str[i] != ' ' && (i == 10 || i == 12)))
+			return (false);
+		if (str[i] == '-')
+			dashes++;
+		else if (str[i] == '.')
+			dots++;
+	}
+	return (std::find(str.begin(), str.end(), '|') != str.end() && (dashes == 2 || dashes == 3) && dots <= 1);
+}
+
+float BitcoinExchange::getValue(time_t timestamp)
+{
+	time_t tmp = 0;
+	time_t tmp_before = 0;
+
+	for (std::map<time_t, float>::iterator it = values.begin(); it != values.end(); it++)
+	{
+		if (tmp >= timestamp)
+		{
+			if (tmp == timestamp)
+				return (values[tmp]);
+			return (values[tmp_before]);
+		}
+		tmp_before = tmp;
+		tmp = it->first;
+	}
+	return (-1);
 }
 
 void BitcoinExchange::translateValues(std::ifstream &input)
@@ -110,21 +151,38 @@ void BitcoinExchange::translateValues(std::ifstream &input)
 			{
 				std::cout << RED << "Input file missing or corrupted first line indicator. Should be \"date | value\"." << std::endl;
 				std::cout << "Found: " << buffer << RESET << std::endl;
-				return ;
 			}
 			line++;
 			continue;
 		}
-		if (!isStringValid(buffer))
+		if (!isValueValid(buffer))
 		{
-			std::cout << RED << "data.csv is corrupted at line " << line << "." << std::endl;
+			std::cout << RED << "input file is corrupted at line " << line + 1 << "." << std::endl;
 			std::cout << "> " <<  buffer << RESET << std::endl;
-			return ;
+			line++;
+			continue ;
 		}
-		// std::cout << "Date: " << buffer.substr(0, 4) << " | Timestamp: " << dateToTimestamp(buffer) << " | Value: " << atof(buffer.substr(11, buffer.length()).c_str()) << std::endl;
-		values.insert(std::pair<unsigned long long, double>(dateToTimestamp(buffer), atof(buffer.substr(11, buffer.length() - 11).c_str())));
+		float value = getValue(dateToTimestamp(buffer.substr(0, 10)));
+		if (value < 0)
+		{
+			std::cout << RED << "Value is invalid at line " << line + 1 << "." << std::endl;
+			std::cout << "> " << buffer << RESET << std::endl;
+			line++;
+			continue;
+		}
+		float amount = atof(buffer.substr(13, buffer.length() - 13).c_str());
+		if (amount > 1000 || amount < 0)
+		{
+			if (amount > 1000)
+				std::cout << RED << "Value is too large at line " << line + 1 << ". It must be between 0 and 1000." << std::endl;
+			else
+				std::cout << RED << "Value is negative at line " << line + 1 << ". It must be between 0 and 1000." << std::endl;	
+			std::cout << "> " << buffer << RESET << std::endl;
+			line++;
+			continue;
+		}
+		std::cout << buffer.substr(0, 10) << " => " << amount << " = " << value * amount << std::endl;
 		line++;
 	}
 	input.close();
-	std::cout << GREEN << "Parsed data.csv successfully." << RESET << std::endl;
 }
