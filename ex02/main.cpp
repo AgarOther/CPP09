@@ -5,33 +5,20 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/15 01:07:01 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/05/18 00:13:15 by scraeyme         ###   ########.fr       */
+/*   Created: 2025/05/17 23:58:03 by scraeyme          #+#    #+#             */
+/*   Updated: 2025/05/18 00:12:48 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "BitcoinExchange.hpp"
+#include "PMergeMe.hpp"
 #include "colors.hpp"
-#include <fstream>
 #include <iostream>
-#include <map>
 
 int main(int ac, char **av)
 {
-	std::ifstream infile;
-
-	if (ac != 2)
+	if (ac < 3)
 	{
-		std::cerr << RED << "You need to specify a database file." << RESET << std::endl;
+		std::cerr << RED << "You need to specify at least 2 different positive integers." << RESET << std::endl;
 		return (1);
 	}
-	infile.open(av[1]);
-	if (infile.fail())
-	{
-		std::cerr << RED << "Can't open " << av[1] << ". Aborting." << RESET << std::endl;
-		return (2);
-	}
-	if (!BitcoinExchange::loadValues())
-		return (3);
-	BitcoinExchange::translateValues(infile);
 }

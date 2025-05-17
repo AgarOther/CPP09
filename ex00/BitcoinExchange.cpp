@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 01:06:48 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/05/17 17:17:51 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/05/18 00:14:16 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ bool BitcoinExchange::loadValues()
 	database.open("data.csv");
 	if (database.fail())
 	{
-		std::cout << RED << "Can't open data.csv. Aborting." << RESET << std::endl;
+		std::cerr << RED << "Can't open data.csv. Aborting." << RESET << std::endl;
 		return (false);
 	}
 	line = false;
@@ -97,8 +97,8 @@ bool BitcoinExchange::loadValues()
 		{
 			if (buffer != "date,exchange_rate")
 			{
-				std::cout << RED << "data.csv missing or corrupted first line indicator. Should be \"date,exchange_rate\"." << std::endl;
-				std::cout << "Found: " << buffer << RESET << std::endl;
+				std::cerr << RED << "data.csv missing or corrupted first line indicator. Should be \"date,exchange_rate\"." << std::endl;
+				std::cerr << "> " << buffer << RESET << std::endl;
 				return (false);
 			}
 			line++;
@@ -106,14 +106,14 @@ bool BitcoinExchange::loadValues()
 		}
 		if (!isStringValid(buffer))
 		{
-			std::cout << RED << "data.csv is corrupted at line " << line + 1 << "." << std::endl;
-			std::cout << "> " <<  buffer << RESET << std::endl;
+			std::cerr << RED << "data.csv is corrupted at line " << line + 1 << "." << std::endl;
+			std::cerr << "> " <<  buffer << RESET << std::endl;
 			return (false);
 		}
 		else if (!isDateValid(buffer.substr(0, 11)))
 		{
-			std::cout << RED << "data.csv has invalid date at line " << line + 1 << "." << std::endl;
-			std::cout << "> " <<  buffer << RESET << std::endl;
+			std::cerr << RED << "data.csv has invalid date at line " << line + 1 << "." << std::endl;
+			std::cerr << "> " <<  buffer << RESET << std::endl;
 			return (false);
 		}
 		values.insert(std::pair<time_t, float>(dateToTimestamp(buffer), atof(buffer.substr(11, buffer.length() - 11).c_str())));
@@ -178,30 +178,30 @@ void BitcoinExchange::translateValues(std::ifstream &input)
 		{
 			if (buffer != "date | value")
 			{
-				std::cout << RED << "Input file missing or corrupted first line indicator. Should be \"date | value\"." << std::endl;
-				std::cout << "> " << buffer << RESET << std::endl;
+				std::cerr << RED << "Input file missing or corrupted first line indicator. Should be \"date | value\"." << std::endl;
+				std::cerr << "> " << buffer << RESET << std::endl;
 			}
 			line++;
 			continue;
 		}
 		if (!isValueValid(buffer))
 		{
-			std::cout << RED << "Input file is corrupted at line " << line + 1 << "." << std::endl;
-			std::cout << "> " <<  buffer << RESET << std::endl;
+			std::cerr << RED << "Input file is corrupted at line " << line + 1 << "." << std::endl;
+			std::cerr << "> " <<  buffer << RESET << std::endl;
 			line++;
 			continue ;
 		}
 		else if (!isDateValid(buffer.substr(0, 11)))
 		{
-			std::cout << RED << "Input file has invalid date at line " << line + 1 << "." << std::endl;
-			std::cout << "> " <<  buffer << RESET << std::endl;
+			std::cerr << RED << "Input file has invalid date at line " << line + 1 << "." << std::endl;
+			std::cerr << "> " <<  buffer << RESET << std::endl;
 			continue;
 		}
 		float value = getValue(dateToTimestamp(buffer.substr(0, 10)));
 		if (value < 0)
 		{
-			std::cout << RED << "Input file has invalid value at line " << line + 1 << "." << std::endl;
-			std::cout << "> " << buffer << RESET << std::endl;
+			std::cerr << RED << "Input file has invalid value at line " << line + 1 << "." << std::endl;
+			std::cerr << "> " << buffer << RESET << std::endl;
 			line++;
 			continue;
 		}
@@ -209,10 +209,10 @@ void BitcoinExchange::translateValues(std::ifstream &input)
 		if (amount > 1000 || amount < 0)
 		{
 			if (amount > 1000)
-				std::cout << RED << "Input file value is too large at line " << line + 1 << ". It must be between 0 and 1000." << std::endl;
+				std::cerr << RED << "Input file value is too large at line " << line + 1 << ". It must be between 0 and 1000." << std::endl;
 			else
-				std::cout << RED << "Input file value is negative at line " << line + 1 << ". It must be between 0 and 1000." << std::endl;	
-			std::cout << "> " << buffer << RESET << std::endl;
+				std::cerr << RED << "Input file value is negative at line " << line + 1 << ". It must be between 0 and 1000." << std::endl;	
+			std::cerr << "> " << buffer << RESET << std::endl;
 			line++;
 			continue;
 		}

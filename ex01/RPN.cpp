@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 13:40:15 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/05/17 23:48:09 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/05/18 00:13:01 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,9 +76,9 @@ bool RPN::execute(const std::string &str)
 		if (tmp.length() != 1 || !isValid(tmp[0]))
 		{
 			if (tmp.length() == 0)
-				std::cout << RED << "Value #" << count << " has multiple spaces." << RESET << std::endl;
+				std::cerr << RED << "Value #" << count << " has multiple spaces." << RESET << std::endl;
 			else
-				std::cout << RED << "Value #" << count <<" '" << BOLD_RED << tmp << RESET << RED
+				std::cerr << RED << "Value #" << count <<" '" << BOLD_RED << tmp << RESET << RED
 					<< "' isn't valid. It needs to be 1 character, either digit or operand." << RESET << std::endl;
 			return (false);
 		}
@@ -90,17 +90,17 @@ bool RPN::execute(const std::string &str)
 	}
 	if (values < 2)
 	{
-		std::cout << RED << "Not enough values. You need to have at least 2 before any operands." << RESET << std::endl;
+		std::cerr << RED << "Not enough values. You need to have at least 2 before any operands." << RESET << std::endl;
 		return (false);
 	}
 	else if (operands < 1)
 	{
-		std::cout << RED << "Not enough operands. You need to have at least 1 after the first 2 values." << RESET << std::endl;
+		std::cerr << RED << "Not enough operands. You need to have at least 1 after the first 2 values." << RESET << std::endl;
 		return (false);
 	}
 	else if (operands >= values)
 	{
-		std::cout << RED << "Not enough values for the amount of operands. You need to have at most 1 less operand than the total amount of values."
+		std::cerr << RED << "Not enough values for the amount of operands. You need to have at most 1 less operand than the total amount of values."
 			<< RESET << std::endl;
 		return (false);
 	}
