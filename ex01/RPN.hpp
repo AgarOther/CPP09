@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 13:39:50 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/05/16 13:45:07 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/05/17 17:44:10 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,13 @@
 # include <string>
 
 static std::vector<char> values;
+static std::vector<char> operands;
 
 class RPN
 {
 	public:
-		static void loadValues(const std::string &str);
+		static bool loadValues(const std::string &str);
+		static void processValues();
 };
 
 #endif
