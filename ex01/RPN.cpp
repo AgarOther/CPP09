@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 13:40:15 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/05/17 18:00:55 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/05/17 23:48:09 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,47 +21,56 @@ static bool isValid(const char &c)
 	return (isdigit(c) || c == '+' || c == '-' || c == '/' || c == '*');
 }
 
-static double executeOperation(double res, char digit, char operand)
+double RPN::executeOperation(double leftOperand, double rightOperand, char operand)
 {
 	if (operand == '+')
-		return (res + atoi(&digit));
+		return (leftOperand + rightOperand);
 	else if (operand == '-')
-		return (res - atoi(&digit));
+		return (leftOperand - rightOperand);
 	else if (operand == '*')
-		return (res * atoi(&digit));
+		return (leftOperand * rightOperand);
 	else if (operand == '/')
-		return (res / atoi(&digit));
+		return (leftOperand / rightOperand);
 	else
 		return (-1);
 }
 
-void RPN::processValues()
+void RPN::processValues(const std::string &str)
 {
-	double res = 0;
-	std::vector<char>::iterator valuesIter = values.begin();
-	std::vector<char>::iterator operandsIter = operands.begin();
+	double leftOperand = 0;
+	double rightOperand = 0;
+	double tmp;
 
-	for (; valuesIter != values.end(); valuesIter++)
+	for (size_t i = 0; i < str.length(); i++)
 	{
-		if (!res)
+		if (isdigit(str[i]))
+			values.push(atoi(&str[i]));
+		else if (str[i] != ' ')
 		{
-			char digit = *valuesIter;
-			res = atoi(&digit);
-			continue;
+			rightOperand = values.top();
+			values.pop();
+			leftOperand = values.top();
+			values.pop();
+			tmp = executeOperation(leftOperand, rightOperand, str[i]);
+			values.push(tmp);
 		}
-		res = executeOperation(res, *valuesIter, *operandsIter);
-		operandsIter++;
 	}
-	std::cout << res << std::endl;
+	tmp = values.top();
+	values.pop();
+	std::cout << tmp << std::endl;
 }
 
-bool RPN::loadValues(const std::string &str)
+bool RPN::execute(const std::string &str)
 {
 	std::stringstream split(str);
 	std::string tmp;
 	int count;
+	int values;
+	int operands;
 
 	count = 1;
+	values = 1;
+	operands = 1;
 	while (std::getline(split, tmp, ' '))
 	{
 		if (tmp.length() != 1 || !isValid(tmp[0]))
@@ -69,29 +78,32 @@ bool RPN::loadValues(const std::string &str)
 			if (tmp.length() == 0)
 				std::cout << RED << "Value #" << count << " has multiple spaces." << RESET << std::endl;
 			else
-				std::cout << RED << "Value #" << count <<" '" << BLUE << tmp << RED << "' isn't valid. It needs to be 1 character, either digit or operand." << RESET << std::endl;
+				std::cout << RED << "Value #" << count <<" '" << BOLD_RED << tmp << RESET << RED
+					<< "' isn't valid. It needs to be 1 character, either digit or operand." << RESET << std::endl;
 			return (false);
 		}
 		if (isdigit(tmp[0]))
-			values.push_back(tmp[0]);
+			values++;
 		else
-			operands.push_back(tmp[0]);
+			operands++;
 		count++;
 	}
-	if (values.size() < 2)
+	if (values < 2)
 	{
 		std::cout << RED << "Not enough values. You need to have at least 2 before any operands." << RESET << std::endl;
 		return (false);
 	}
-	else if (operands.size() < 1)
+	else if (operands < 1)
 	{
 		std::cout << RED << "Not enough operands. You need to have at least 1 after the first 2 values." << RESET << std::endl;
 		return (false);
 	}
-	else if (operands.size() >= values.size())
+	else if (operands >= values)
 	{
-		std::cout << RED << "Not enough values for the amount of operands. You need to have at most 1 less operand than the total amount of values." << RESET << std::endl;
+		std::cout << RED << "Not enough values for the amount of operands. You need to have at most 1 less operand than the total amount of values."
+			<< RESET << std::endl;
 		return (false);
 	}
+	processValues(str);
 	return (true);
 }
