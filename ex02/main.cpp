@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 23:58:03 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/05/18 00:12:48 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/05/18 14:28:23 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,4 +21,5 @@ int main(int ac, char **av)
 		std::cerr << RED << "You need to specify at least 2 different positive integers." << RESET << std::endl;
 		return (1);
 	}
+	PMergeMe::parseValues((const char **)&av[1]);
 }

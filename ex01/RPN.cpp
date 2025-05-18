@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 13:40:15 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/05/18 00:13:01 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/05/18 14:06:57 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ void RPN::processValues(const std::string &str)
 {
 	double leftOperand = 0;
 	double rightOperand = 0;
-	double tmp;
+	double tmp = 0;
 
 	for (size_t i = 0; i < str.length(); i++)
 	{
@@ -51,6 +51,13 @@ void RPN::processValues(const std::string &str)
 			values.pop();
 			leftOperand = values.top();
 			values.pop();
+			if (!rightOperand)
+			{
+				std::cerr << RED << "Zero division detected. Aborting." << RESET << std::endl;
+				while (values.size())
+					values.pop();
+				return;
+			}
 			tmp = executeOperation(leftOperand, rightOperand, str[i]);
 			values.push(tmp);
 		}
