@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 23:58:40 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/05/18 14:15:54 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/05/18 14:50:32 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,10 @@ static std::list<int> listSequence;
 class PMergeMe
 {
 	public:
-		static void parseValues(const char **str);
+		static bool parseValues(const char **str);
+
+		template <typename T>
+		void sort(T);
 };
 
 #endif

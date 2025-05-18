@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 23:59:09 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/05/18 14:37:45 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/05/18 14:56:09 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ static bool isSorted()
 	return (true);
 }
 
-void PMergeMe::parseValues(const char **str)
+bool PMergeMe::parseValues(const char **str)
 {
 	long tmp;
 
@@ -76,18 +76,18 @@ void PMergeMe::parseValues(const char **str)
 		if (!isValid(str[i]))
 		{
 			std::cerr << RED << "Value #" << i + 1 << " '" << BOLD_RED << str[i] << RESET << RED << "' is invalid." << std::endl;
-			return;
+			return (false);
 		}
 		tmp = atol(str[i]);
 		if (tmp > __INT_MAX__)
 		{
 			std::cerr << RED << "Value #" << i + 1 << " '" << BOLD_RED << str[i] << RESET << RED << "' is an integer overflow." << std::endl;
-			return;
+			return (false);
 		}
 		else if (isDuplicate(tmp))
 		{
 			std::cerr << RED << "Value #" << i + 1 << " '" << BOLD_RED << str[i] << RESET << RED << "' is a duplicate." << std::endl;
-			return;
+			return (false);
 		}
 		vectorSequence.push_back((int)tmp);
 		listSequence.push_back((int)tmp);
@@ -95,6 +95,37 @@ void PMergeMe::parseValues(const char **str)
 	if (isSorted())
 	{
 		std::cerr << YELLOW << "Your values are already sorted." << std::endl;
-		return;
+		return (false);
 	}
+	return (true);
+}
+
+template <typename T>
+static T fordJohnson(T values)
+{
+	
+}
+
+template <typename T>
+void PMergeMe::sort(T)
+{
+	T smallValues;
+	T bigValues;
+	int tmp;
+	int tmp2;
+
+	for (T::iterator it = vectorSequence.begin(); it != vectorSequence.end(); it++)
+	{
+		tmp = *it;
+		it++;
+		if (it == vectorSequence.end())
+			bigValues.push_back(*it);
+		else
+		{
+			tmp2 = *it;
+			smallValues.push_back(tmp < tmp2 ? tmp : tmp2);
+			bigValues.push_back(tmp > tmp2 ? tmp : tmp2);
+		}
+	}
+	T smallSorted = fordJohnson(smallValues);
 }
