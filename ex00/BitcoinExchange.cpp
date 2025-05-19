@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 01:06:48 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/05/18 00:14:16 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/05/19 14:48:57 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,8 +151,9 @@ float BitcoinExchange::getValue(time_t timestamp)
 {
 	time_t tmp = 0;
 	time_t tmp_before = 0;
+	std::map<time_t, float>::iterator it = values.begin();
 
-	for (std::map<time_t, float>::iterator it = values.begin(); it != values.end(); it++)
+	for (; it != values.end(); it++)
 	{
 		if (tmp >= timestamp)
 		{
@@ -163,7 +164,8 @@ float BitcoinExchange::getValue(time_t timestamp)
 		tmp_before = tmp;
 		tmp = it->first;
 	}
-	return (-1);
+	it--;
+	return (values[it->first]);
 }
 
 void BitcoinExchange::translateValues(std::ifstream &input)
@@ -180,6 +182,7 @@ void BitcoinExchange::translateValues(std::ifstream &input)
 			{
 				std::cerr << RED << "Input file missing or corrupted first line indicator. Should be \"date | value\"." << std::endl;
 				std::cerr << "> " << buffer << RESET << std::endl;
+				return;
 			}
 			line++;
 			continue;
