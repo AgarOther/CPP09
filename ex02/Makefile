@@ -7,7 +7,8 @@ NAME				=	PmergeMe
 
 # Sources & Includes
 SRCS				= 	main.cpp \
-						PMergeMe.cpp
+						PMergeMe.cpp \
+						sort_utils.cpp
 OBJ_FOLDER			=	objs
 
 # Objects
