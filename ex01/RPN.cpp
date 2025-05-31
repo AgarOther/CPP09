@@ -49,6 +49,11 @@ void RPN::processValues(const std::string &str)
 		{
 			rightOperand = values.top();
 			values.pop();
+			if (values.empty())
+			{
+				std::cerr << RED << "Invalid RPN expression." << RESET << std::endl;
+				return;
+			}
 			leftOperand = values.top();
 			values.pop();
 			if (!rightOperand)
@@ -68,7 +73,7 @@ void RPN::processValues(const std::string &str)
 		std::cout << tmp << std::endl;
 	else
 	{
-		std::cout << RED << "Invalid RPN expression. Too many values specified for the amount of operands." << RESET << std::endl;
+		std::cerr << RED << "Invalid RPN expression. Too many values specified for the amount of operands." << RESET << std::endl;
 		while (!values.empty())
 			values.pop();
 	}
