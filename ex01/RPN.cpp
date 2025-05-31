@@ -56,7 +56,7 @@ void RPN::processValues(const std::string &str)
 			}
 			leftOperand = values.top();
 			values.pop();
-			if (!rightOperand)
+			if (!rightOperand && str[i] == '/')
 			{
 				std::cerr << RED << "Zero division detected. Aborting." << RESET << std::endl;
 				while (values.size())
