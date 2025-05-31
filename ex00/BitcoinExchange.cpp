@@ -120,6 +120,11 @@ bool BitcoinExchange::loadValues()
 		line++;
 	}
 	database.close();
+	if (values.empty())
+	{
+		std::cout << RED << "data.csv is empty." << RESET << std::endl;
+		return (false);
+	}
 	std::cout << GREEN << "Parsed data.csv successfully." << RESET << std::endl;
 	return (true);
 }
