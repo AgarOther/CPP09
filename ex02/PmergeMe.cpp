@@ -1,23 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   PMergeMe.cpp                                       :+:      :+:    :+:   */
+/*   PmergeMe.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 23:59:09 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/05/20 03:20:48 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/05/31 11:17:25 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "PMergeMe.hpp"
+#include "PmergeMe.hpp"
 #include "colors.hpp"
 #include <string>
 #include <iostream>
 #include <algorithm>
 #include <ctime>
 
-bool PMergeMe::execute(const char **str)
+bool PmergeMe::execute(const char **str)
 {
 	long tmp;
 	clock_t vectorTime;

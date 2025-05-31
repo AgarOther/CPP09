@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   PMergeMe.tpp                                       :+:      :+:    :+:   */
+/*   PmergeMe.tpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 03:10:35 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/05/20 03:19:28 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/05/31 11:16:34 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "PMergeMe.hpp"
+#include "PmergeMe.hpp"
 #include <algorithm>
 
 template <typename T>

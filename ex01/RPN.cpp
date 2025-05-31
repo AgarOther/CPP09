@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 13:40:15 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/05/18 14:06:57 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/05/31 11:25:50 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,14 @@ void RPN::processValues(const std::string &str)
 	}
 	tmp = values.top();
 	values.pop();
-	std::cout << tmp << std::endl;
+	if (values.empty())
+		std::cout << tmp << std::endl;
+	else
+	{
+		std::cout << RED << "Invalid RPN expression. Too many values specified for the amount of operands." << RESET << std::endl;
+		while (!values.empty())
+			values.pop();
+	}
 }
 
 bool RPN::execute(const std::string &str)
